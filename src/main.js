@@ -8,7 +8,7 @@ const dialogMessage = document.getElementById('dialogMessage');
 const closeDialogBtn = document.getElementById('closeDialog');
 
 dateForm.addEventListener('submit', (event) => {
-  event.preventDefault(); // Zapobiega przeładowaniu strony
+  event.preventDefault();
 
   const birthDateValue = birthDateInput.value;
   if (!birthDateValue) return;
@@ -18,14 +18,33 @@ dateForm.addEventListener('submit', (event) => {
 
   const daysDiff = today.diff(birthDate, 'days');
 
-  const isBirthdayToday = today.format('MM-D') === birthDate.format('MM-D');
+  const isBirthdayToday = today.format('MM-DD') === birthDate.format('MM-DD');
 
   if (isBirthdayToday) {
-    alert("Wszystkiego najlepszego!");
+    alert("Wszystkiego najlepszego! 🎂🎉");
   }
 
-  dialogMessage.textContent = `Od Twoich narodzin minęło już ${daysDiff} dni!`;
-  resultDialog.showModal(); // Standardowa metoda HTML5 dla elementu <dialog>
+  let nextBirthday = dayjs(`${today.year()}-${birthDate.format('MM-DD')}`);
+
+  if (nextBirthday.isBefore(today, 'day') && !isBirthdayToday) {
+    nextBirthday = nextBirthday.add(1, 'year');
+  }
+
+  const daysUntil = nextBirthday.diff(today, 'days');
+  // Przeliczamy na tygodnie (zaokrąglamy w dół)
+  const weeksUntil = Math.floor(daysUntil / 7);
+
+  let resultText = `Od Twoich narodzin minęło ${daysDiff} dni.`;
+
+  if (!isBirthdayToday) {
+    if (weeksUntil === 0) {
+      resultText += `<br><strong>Masz urodziny w tym tygodniu!</strong>`;
+    } else {
+      resultText += `<br>Do Twoich urodzin pozostało tygodni: ${weeksUntil}.`;
+    }
+  }
+  dialogMessage.innerHTML = resultText;
+  resultDialog.showModal();
 });
 
 closeDialogBtn.addEventListener('click', () => {
