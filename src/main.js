@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 
-
 const dateForm = document.getElementById('dateForm');
 const birthDateInput = document.getElementById('birthDate');
 const resultDialog = document.getElementById('resultDialog');
@@ -11,23 +10,25 @@ dateForm.addEventListener('submit', (e) => {
   e.preventDefault();
   
   const birthDateValue = birthDateInput.value;
-  if (!birthDateValue) return;
+
+  if (!birthDateValue) {
+    return; 
+  }
 
   const today = dayjs().startOf('day');
   const birthDate = dayjs(birthDateValue).startOf('day');
 
-
   const daysPassed = today.diff(birthDate, 'day');
 
   if (daysPassed < 0) {
-    dialogMessage.innerHTML = "Wygląda na to, że jeszcze się nie urodziłeś/aś! 👶";
+    dialogMessage.innerHTML = "Wygląda na to, że podano datę z przyszłości! 👶";
     resultDialog.showModal();
     return;
   }
 
   let message = `Od Twoich narodzin minęło już <strong>${daysPassed}</strong> dni.`;
 
-
+  const currentYear = today.year();
   let nextBirthday = birthDate.year(currentYear);
 
   if (nextBirthday.isBefore(today, 'day')) {
@@ -39,7 +40,6 @@ dateForm.addEventListener('submit', (e) => {
   if (isBirthdayToday) {
     message += "<br><span class='text-xl block mt-2 font-bold text-green-600'>🎉 Wszystkiego najlepszego! 🎉</span>";
   } else {
-
     const daysToBirthday = nextBirthday.diff(today, 'day');
     const weeksToBirthday = Math.ceil(daysToBirthday / 7);
 
@@ -51,15 +51,10 @@ dateForm.addEventListener('submit', (e) => {
   }
 
   dialogMessage.innerHTML = message;
-  resultDialog.showModal();
+  
+  resultDialog.showModal(); 
 });
 
 closeDialog.addEventListener('click', () => {
   resultDialog.close();
-});
-
-resultDialog.addEventListener('click', (e) => {
-  if (e.target === resultDialog) {
-    resultDialog.close();
-  }
 });
