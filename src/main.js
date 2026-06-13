@@ -1,3 +1,4 @@
+import './style.css';
 import dayjs from 'dayjs';
 
 const dateForm = document.getElementById('dateForm');
